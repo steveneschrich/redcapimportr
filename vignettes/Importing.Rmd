@@ -1,0 +1,65 @@
+---
+title: "Importing"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Importing}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(redcapimportr)
+```
+
+# Overview
+This package is designed to import REDCap exports into R without some of the limitations that the current (as of v11.0.0) exports have. The limitations are minor, but frequently encountered by me in the course of my work. 
+
+*NOTE*: There is an excellent package for directly interacting with the REDCap server. Ideally, this will be obsolete once the REDCapR is fully utilized here.
+
+# File Inputs
+REDCap allows a user to export all of the data in a project as an R object. Actually it produces two different files: a csv and an R script. The files themselves are named in a form similar to 
+```
+<Project>P_[DATA|R]_YYYY-MM-DD_HHMM
+```
+
+## Filenames
+It is important to have both files in order to make things work in R; one needs both the metadata (r file) and data (csv). One practical issue that comes up when managing this type of data is that it is cumbersome to refer to both files when parameterizing the data load. However, it should be possible based on having one of the two filenames, to get both filenames.
+
+To make the management of two components (how I refer to the two files) simpler, there are a series of functions available that culminate in `return_filename_pair()` which will return a pair of filenames, one for R and one for CSV, given either of the two filenames. For instance, 
+```{r}
+return_filename_pair("PartnershipTrackingP_R_2021-11-08_1628.r")
+```
+
+
+## R
+The R script involves setting up variables, variable types, and other functions. It can be very
+involved and kudos to the REDCap team for creating such an easy interface. There are, however, a
+couple of small limitations in the import that would nice to fix. These are detailed below.
+
+### Clearing the environment
+The first action that the script takes is to clear out the environment. That is great when this is the
+first activity you execute within an R session. If you happen to have other stuff, it may not be
+as great. This isn't the end of the world, since you can just evaluate this in a separate environment
+and return the results. However, it is (to me) a bit of unexpected behavior. 
+
+### Labels for factors
+Labels are defined on variables and these typically represent the question that was asked in the
+REDCap form. This is very helpful, since the variable name itself may be somewhat terse or difficult
+to interpret. However, in the process of loading data the R script will generously convert numeric
+variables that are factors into factors. Think yes/no (as opposed to 0/1). This is a tremendous help
+in figuring out how to handle specific variables. One thing that is missing here is that the labels
+that were assigned to the numeric variables aren't copied over to the factor variables. A small thing,
+but can be difficult to deal with in some cases. 
+
+
+## CSV
+The csv is fairly straightforward to load as it amounts to a table of data. This is loaded by the R
+script, so not much inspection is needed of this file.
+

@@ -1,0 +1,32 @@
+Package: redcapimportr
+Title: Import an Exported REDCap R/CSV Dataset 
+Version: 0.0.0.9000
+Authors@R: 
+    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
+           comment = c(ORCID = "YOUR-ORCID-ID"))
+Description: REDCap provides the opportunity to export the data from a
+  project in a format suitable for importing into R. That is, except
+  there are a few things that make it difficult to work with. Among
+  the concerns are the specific object name, the fact that one-to-many
+  relationships are in the same table, and that factors do not get labelled
+  with the question label. Minor challenges all and not significant barriers.
+  This package was developed to clean up these minor difficulties and produce
+  data suitable for downstream processing.
+License: GPL (>= 3)
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.1.2
+Suggests: 
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
+VignetteBuilder: knitr
+Config/testthat/edition: 3
+Imports:
+    labelled,
+    dplyr,
+    glue,
+    stringr,
+    magrittr,
+    rlang,
+    tibble
