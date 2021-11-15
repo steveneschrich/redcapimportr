@@ -1,10 +1,10 @@
-split_list_r <- list(preamble="PartnershipTracking",
+split_list_r <- list(preamble="PartnershipTrackingP",
                      type = "R",
                      date = "2021-11-08",
                      time = "1628",
                      ext="r"
 )
-split_list_data <-list(preamble="PartnershipTracking",
+split_list_data <-list(preamble="PartnershipTrackingP",
                        type="DATA",
                        date="2021-11-08",
                        time = "1628",

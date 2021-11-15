@@ -29,4 +29,9 @@ Imports:
     stringr,
     magrittr,
     rlang,
-    tibble
+    tibble,
+    checkmate,
+    purrr,
+    readr,
+    tidyr,
+    tidyselect

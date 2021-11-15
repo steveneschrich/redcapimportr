@@ -1,6 +1,6 @@
-#' Read REDCap import data into R
+#' Import REDCap data into R
 #'
-#' @description REDCap exported data (exported to R) is read in with a few tweaks to the data
+#' @description REDCap exported data (exported to R) is imported with a few tweaks to the data
 #' for usability.
 #'
 #' @details
@@ -31,9 +31,9 @@
 #'
 #' @examples
 #' \dontrun{
-#' read_redcap_data("export_from_redcap.R")
+#' import_redcap_data("export_from_redcap.R")
 #' }
-read_redcap_data <- function(f) {
+import_redcap_data <- function(f) {
   stopifnot(is_filename_r(f) || (is.list(f) && utils::hasName(f, "r")))
   f <- ifelse(is.list(f), f$r, f)
 
@@ -45,7 +45,9 @@ read_redcap_data <- function(f) {
   # The script defines a function (r_script) which will load the data for us.
   res<-r_script() %>%
     # Label the factor variables (which are not done by default)
-    label_factor_variables()
+    label_factor_variables() %>%
+    # Merge checkboxes into a single field
+    coalesce_checkbox_fields()
 
 
   res
@@ -67,7 +69,7 @@ read_redcap_data <- function(f) {
 #' label that was on the non-factor version of the variable. The resulting data is then returned.
 #'
 #' @note This function is not exported and should generally not be called outside of the package.
-#'  It is part of a set of function calls to clean up redcap data. Check out \code{\link{read_redcap_data}}
+#'  It is part of a set of function calls to clean up redcap data. Check out \code{\link{import_redcap_data}}
 #'  for the best entrypoint to this code.
 #'
 #' @param x A table of REDCap imported data.
@@ -127,7 +129,7 @@ label_factor_variables <- function(x) {
 #' of both of these issues which makes loading easier.
 #'
 #' @note This function generally shouldn't be run (and is not exported) since there is a higher-level
-#' function, \code{\link{read_redcap_data}} that manages a few other aspects of the data loading. This
+#' function, \code{\link{import_redcap_data}} that manages a few other aspects of the data loading. This
 #' function only manages loading the R script itself.
 #'
 #' @param f The R script file to load
@@ -141,6 +143,10 @@ load_redcap_script <- function(f) {
     tibble::enframe(value="text", name=NULL) %>%
     # Remove the rm() entry in the script.
     dplyr::filter(stringr::str_detect(.data$text, "rm\\(list=ls\\(\\)\\)", negate=TRUE)) %>%
+    # Remove the library() call to keep from adding to the namespace
+    dplyr::filter(stringr::str_detect(.data$text, "^library", negate = TRUE)) %>%
+    # Since library is removed, prefix calls to 'label' with Hmisc::
+    dplyr::mutate(text = stringr::str_replace_all(.data$text, "^label\\(","Hmisc::label\\(")) %>%
     # Wrap script in a function call, so that can evaluate it without respect to
     # the global environment
     dplyr::bind_rows(c(text=".internal_redcap_load<-function() {"), .data$.) %>%

@@ -26,7 +26,7 @@ return_filename_pair <- function(f) {
 #' # [1] TRUE
 #'
 is_filename_r <- function(f) {
-  stringr::str_ends(f,  "\\.[rR]")
+  stringr::str_ends(f,  "\\.(?i)r")
 }
 
 #' Is the filename a csv file?
@@ -40,7 +40,7 @@ is_filename_r <- function(f) {
 #' is_filename_csv("test.csv")
 #' # [1] TRUE
 is_filename_csv <- function(f) {
-  stringr::str_ends(f, "\\.[cC][sS][vV]")
+  stringr::str_ends(f, "\\.(?i)csv")
 }
 
 #' Return the R filename based on input filename
@@ -101,12 +101,10 @@ csv_filename <- function(f) {
 #' split_redcap_filename("PartnershipTrackingP_DATA_2021-11-08_1628.csv")
 #' split_redcap_filename("PartnershipTrackingP_R_2021-11-08_1628.r")
 split_redcap_filename <- function(f) {
-  m <-stringr::str_match(f, "(.*)P_(R|DATA)_(\\d{4}\\-\\d{2}\\-\\d{2})_(\\d{4})\\.(csv|r)")
+  m <-stringr::str_match(f, "(.*)_(R|DATA)_(\\d{4}\\-\\d{2}\\-\\d{2})_(\\d{4})\\.(csv|r)")
   # If full match is NA, the file is not in the correct format.
-  if (is.na(m[1,1])) {
-    warning(glue::glue("`{f}` not in appropriate form to split per REDCap standards."))
-    return(f)
-  }
+  checkmate::assert_matrix(m, any.missing=FALSE, ncols=6)
+
   list(preamble = m[1,2], type = m[1,3],
        date = m[1,4], time = m[1,5], ext = m[1,6])
 }
@@ -122,10 +120,7 @@ split_redcap_filename <- function(f) {
 #' @examples
 #' r_filename_to_csv("PartnershipTrackingP_R_2021-11-08_1628.r")
 r_filename_to_csv <- function(f) {
-  if (!is_filename_r(f)) {
-    warning(glue::glue("{f} is not an R file to convert to CSV."))
-    return(NA)
-  }
+  checkmate::assert_true(is_filename_r(f))
 
   comp<-split_redcap_filename(f)
   comp$type <- "DATA"
@@ -143,10 +138,7 @@ r_filename_to_csv <- function(f) {
 #' @examples
 #' csv_filename_to_r("PartnershipTrackingP_DATA_2021-11-08_1628.csv")
 csv_filename_to_r <- function(f) {
-  if (!is_filename_csv(f)) {
-    warning(glue::glue("{f} is not a CSV file to convert to R."))
-    return(NA)
-  }
+  checkmate::assert_true(is_filename_csv(f))
 
   comp<-split_redcap_filename(f)
   comp$type <- "R"
@@ -173,5 +165,5 @@ csv_filename_to_r <- function(f) {
 #' ))
 #'
 format_redcap_filename<-function(comp) {
-  as.character(glue::glue_data(comp, "{preamble}P_{type}_{date}_{time}.{ext}"))
+  as.character(glue::glue_data(comp, "{preamble}_{type}_{date}_{time}.{ext}"))
 }
