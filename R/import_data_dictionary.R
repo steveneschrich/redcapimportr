@@ -53,7 +53,7 @@ import_data_dictionary <- function(f) {
 #'   NA
 #' ))
 split_choices <- function(s) {
-  purrr::map(stringr::str_split(s,"\\|"), ~split_levels(.data$.))
+  purrr::map(stringr::str_split(s,"\\|"), function(x) {split_levels(x)})
 }
 
 
