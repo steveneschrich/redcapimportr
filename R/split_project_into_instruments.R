@@ -23,4 +23,6 @@ split_project_into_instruments <- function(project, dictionary) {
     project %>%
       dplyr::select(.data$`record_id`, tidyselect::starts_with("redcap_"), tidyselect::all_of(v) )
   })
+
+ # if projectcontainsredcap_repeat_instrument
 }

@@ -137,6 +137,8 @@ label_factor_variables <- function(x) {
 #'
 #' @importFrom magrittr %>%
 #'
+#'
+utils::globalVariables(".")
 load_redcap_script <- function(f) {
   # Read the script in so we can fix a few lines in it.
   r_script <- readLines(f) %>%
@@ -149,7 +151,7 @@ load_redcap_script <- function(f) {
     dplyr::mutate(text = stringr::str_replace_all(.data$text, "^label\\(","Hmisc::label\\(")) %>%
     # Wrap script in a function call, so that can evaluate it without respect to
     # the global environment
-    dplyr::bind_rows(c(text=".internal_redcap_load<-function() {"), .data$.) %>%
+    dplyr::bind_rows(c(text=".internal_redcap_load<-function() {"), .) %>%
     dplyr::bind_rows(c(text=" data }")) %>%
     # Next, when we read the csv file it doesn't have the option to be in another directory.
     # Here, we'll assume it's in the same place as f, so translate to csv file.
