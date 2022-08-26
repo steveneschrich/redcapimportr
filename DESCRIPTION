@@ -1,6 +1,6 @@
 Package: redcapimportr
 Title: Import an Exported REDCap R/CSV Dataset 
-Version: 0.0.0.9000
+Version: 1.0.0
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
@@ -15,7 +15,7 @@ Description: REDCap provides the opportunity to export the data from a
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.1
 Suggests: 
     knitr,
     rmarkdown,
