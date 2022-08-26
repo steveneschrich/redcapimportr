@@ -43,16 +43,26 @@ create_checkbox_variable <- function(project, variable, sep="|") {
   checkbox_variables <- glue::glue("{variable}___\\d+$") %from% colnames(project)
   clean_label <- stringr::str_replace_all(labelled::var_label(project %>% dplyr::select(checkbox_variables[[1]])),
                                       checkbox_choice_regex(),"")
+
+  variable_list <- paste0(variable,"_list")
+
   project %>%
     # Recode checkbox variables to be values, not 0/1
     dplyr::mutate(dplyr::across(
       dplyr::all_of(checkbox_variables), ~recode_checkbox_variable(.))) %>%
     # Combine values to a single variable (without the ___)
-    tidyr::unite({{variable}}, dplyr::all_of(checkbox_variables), sep=sep, na.rm=TRUE) %>%
+    tidyr::unite({{variable}}, dplyr::all_of(checkbox_variables), sep=sep, na.rm=TRUE, remove = FALSE) %>%
+
+    # Combine values into a list as well.
+    embed(vars = checkbox_variables, target = variable_list) |>
+
     # Label new variable per the existing ones
-    labelled::set_variable_labels({{variable}} := clean_label) %>%
+    labelled::set_variable_labels(
+      {{variable}} := clean_label,
+      {{variable_list}} := clean_label
+    ) %>%
     # Return the new variable
-    dplyr::select(variable)
+    dplyr::select(variable, variable_list)
 }
 
 

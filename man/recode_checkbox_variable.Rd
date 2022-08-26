@@ -23,16 +23,20 @@ represents (in the variable label) and the status of the checkbox for a series o
 observations. This function will recode a variable (checkbox) into value/NA with the
 value being the checkbox's value.
 
-For example, consider an input variable\preformatted{checkbox_variable___1
+For example, consider an input variable
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{checkbox_variable___1
 "Which one or more of the following are blue? (choice=sky)"
 [1] 0 0 0 0 1 0
-}
+}\if{html}{\out{</div>}}
 
 Note that the question is the \code{\link[labelled]{var_label}} for the variable. The values
 of 0/1 indicate that the choice was selected or not. The result of this function should
-return\preformatted{"Which one or more of the following are blue? (choice=sky)"
+return
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{"Which one or more of the following are blue? (choice=sky)"
  [1] NA NA NA NA "sky" NA
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 recode_checkbox_variable(

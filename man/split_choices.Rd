@@ -17,7 +17,9 @@ The REDCap data dictionary encodes the choices information for variables a
 certain way. This function extracts the details into a list of character matrices.
 }
 \details{
-REDCap provides choice encoding in the form of\preformatted{1, Poor|2, Average
+REDCap provides choice encoding in the form of
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{1, Poor|2, Average
 ``
 This function will extract the individual levels (e.g., 1,Poor vs 2,Average) and then
 split each into a value and label (e.g., 1 and Poor). See \code{\link{split_levels}} for
@@ -25,7 +27,7 @@ details on the second step.
 
 The result of this function call is a list of character tibbles (corresponding to the
 vector of input strings) with each containing a tibble of two columns: `Value` and `Label`.
-}
+}\if{html}{\out{</div>}}
 }
 \examples{
 split_choices(c(

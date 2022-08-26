@@ -16,8 +16,10 @@ The choice string
 A checkbox choice is embedded in a string describing the question.
 }
 \details{
-The checkbox is embedded in a string of the type\preformatted{This is the question? (choice=<choice>)
-}
+The checkbox is embedded in a string of the type
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{This is the question? (choice=<choice>)
+}\if{html}{\out{</div>}}
 
 This function extracts the \verb{<choice>} from the text.
 }
