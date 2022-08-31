@@ -18,6 +18,9 @@ coalesce_checkbox_fields <- function(project) {
     stringr::str_replace_all("___\\d+$","") %>%
     unique()
 
+  # Added to support no checkboxes in the data.
+  if ( length(checkbox_variables) == 0 ) return(project)
+
   project %>%
     dplyr::bind_cols(
       purrr::map_dfc(checkbox_variables, function(v) {
