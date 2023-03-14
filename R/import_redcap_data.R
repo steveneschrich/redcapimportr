@@ -24,7 +24,8 @@
 #' @param f A R script filename, or the R/CSV pairs as determined by \code{\link{return_filename_pair}}
 #' @param keep_checkbox_fields (FALSE) A logical indicating if the checkbox fields should be
 #'   kept in the resulting data frame.
-#'
+#' @param empty_as_na (FALSE) A logical indicating if the empty string "" should be
+#'   replaced by NA values.
 #' @return A \code{\link[tibble]{tibble}} of REDCap imported data.
 #'
 #' @export
@@ -35,7 +36,11 @@
 #' \dontrun{
 #' import_redcap_data("export_from_redcap.R")
 #' }
-import_redcap_data <- function(f, keep_checkbox_fields = FALSE) {
+import_redcap_data <- function(
+    f,
+    keep_checkbox_fields = FALSE,
+    empty_as_na = FALSE
+) {
   stopifnot(is_filename_r(f) || (is.list(f) && utils::hasName(f, "r")))
   f <- ifelse(is.list(f), f$r, f)
 
@@ -52,6 +57,19 @@ import_redcap_data <- function(f, keep_checkbox_fields = FALSE) {
     coalesce_checkbox_fields(keep_checkbox_fields = keep_checkbox_fields)
 
 
+  # Optionally replace "" with NA. Note there is a labelled function
+  # which preserves labels!
+  if ( empty_as_na ) {
+    res <- dplyr::mutate(
+      res,
+      dplyr::across(
+        dplyr::where(is.character),
+        function(x) {
+          labelled::recode_if(x, x=="",NA)
+        }
+      )
+    )
+  }
   res
 }
 

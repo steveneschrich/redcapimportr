@@ -4,13 +4,16 @@
 \alias{import_redcap_data}
 \title{Import REDCap data into R}
 \usage{
-import_redcap_data(f, keep_checkbox_fields = FALSE)
+import_redcap_data(f, keep_checkbox_fields = FALSE, empty_as_na = FALSE)
 }
 \arguments{
 \item{f}{A R script filename, or the R/CSV pairs as determined by \code{\link{return_filename_pair}}}
 
 \item{keep_checkbox_fields}{(FALSE) A logical indicating if the checkbox fields should be
 kept in the resulting data frame.}
+
+\item{empty_as_na}{(FALSE) A logical indicating if the empty string "" should be
+replaced by NA values.}
 }
 \value{
 A \code{\link[tibble]{tibble}} of REDCap imported data.
