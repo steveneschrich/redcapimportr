@@ -22,6 +22,8 @@
 #'  as determined by \code{\link{return_filename_pair}}.
 #'
 #' @param f A R script filename, or the R/CSV pairs as determined by \code{\link{return_filename_pair}}
+#' @param keep_checkbox_fields (FALSE) A logical indicating if the checkbox fields should be
+#'   kept in the resulting data frame.
 #'
 #' @return A \code{\link[tibble]{tibble}} of REDCap imported data.
 #'
@@ -33,7 +35,7 @@
 #' \dontrun{
 #' import_redcap_data("export_from_redcap.R")
 #' }
-import_redcap_data <- function(f) {
+import_redcap_data <- function(f, keep_checkbox_fields = FALSE) {
   stopifnot(is_filename_r(f) || (is.list(f) && utils::hasName(f, "r")))
   f <- ifelse(is.list(f), f$r, f)
 
@@ -47,7 +49,7 @@ import_redcap_data <- function(f) {
     # Label the factor variables (which are not done by default)
     label_factor_variables() %>%
     # Merge checkboxes into a single field
-    coalesce_checkbox_fields()
+    coalesce_checkbox_fields(keep_checkbox_fields = keep_checkbox_fields)
 
 
   res
@@ -138,7 +140,6 @@ label_factor_variables <- function(x) {
 #' @importFrom magrittr %>%
 #'
 #'
-utils::globalVariables(".")
 load_redcap_script <- function(f) {
   # Read the script in so we can fix a few lines in it.
   r_script <- readLines(f) %>%
@@ -173,3 +174,4 @@ load_redcap_script <- function(f) {
   get(".internal_redcap_load")
 }
 
+utils::globalVariables(".")

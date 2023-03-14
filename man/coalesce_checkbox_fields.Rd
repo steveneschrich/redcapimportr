@@ -4,10 +4,13 @@
 \alias{coalesce_checkbox_fields}
 \title{Coalesce checkbox variables into a single list}
 \usage{
-coalesce_checkbox_fields(project)
+coalesce_checkbox_fields(project, keep_checkbox_fields = FALSE)
 }
 \arguments{
 \item{project}{A redcap tibble}
+
+\item{keep_checkbox_fields}{(FALSE) A logical indicating if the checkbox fields should be
+kept in the resulting data frame.}
 }
 \value{
 A modified tibble with checkbox fields replaced with single columns

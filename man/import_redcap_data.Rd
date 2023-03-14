@@ -4,10 +4,13 @@
 \alias{import_redcap_data}
 \title{Import REDCap data into R}
 \usage{
-import_redcap_data(f)
+import_redcap_data(f, keep_checkbox_fields = FALSE)
 }
 \arguments{
 \item{f}{A R script filename, or the R/CSV pairs as determined by \code{\link{return_filename_pair}}}
+
+\item{keep_checkbox_fields}{(FALSE) A logical indicating if the checkbox fields should be
+kept in the resulting data frame.}
 }
 \value{
 A \code{\link[tibble]{tibble}} of REDCap imported data.

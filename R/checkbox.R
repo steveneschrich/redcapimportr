@@ -4,6 +4,8 @@
 #' are coalesced into a single variable which is a list of selections.
 #'
 #' @param project A redcap tibble
+#' @param keep_checkbox_fields (FALSE) A logical indicating if the checkbox fields should be
+#'   kept in the resulting data frame.
 #'
 #' @return A modified tibble with checkbox fields replaced with single columns
 #' @export
@@ -11,7 +13,7 @@
 #' @importFrom rlang .data
 
 #' @examples
-coalesce_checkbox_fields <- function(project) {
+coalesce_checkbox_fields <- function(project, keep_checkbox_fields = FALSE) {
   all_checkbox_variables <- "___\\d+$" %from% colnames(project)
   all_checkbox_variables_factor <- paste0(all_checkbox_variables, ".factor")
   checkbox_variables <- all_checkbox_variables %>%
@@ -21,13 +23,18 @@ coalesce_checkbox_fields <- function(project) {
   # Added to support no checkboxes in the data.
   if ( length(checkbox_variables) == 0 ) return(project)
 
-  project %>%
+  p <- project %>%
     dplyr::bind_cols(
       purrr::map_dfc(checkbox_variables, function(v) {
         create_checkbox_variable(project, v)
       })
-    ) %>%
-    dplyr::select(-{{ all_checkbox_variables}}, -{{all_checkbox_variables_factor}})
+    )
+
+  # Keep checkbox fields if requested.
+  if ( ! keep_checkbox_fields )
+    p <- dplyr::select(p, -{{ all_checkbox_variables}}, -{{all_checkbox_variables_factor}})
+
+  p
 }
 
 
