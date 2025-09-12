@@ -1,4 +1,30 @@
 
+
+
+#' Is the object a filename pair?
+#'
+#' @param f An object to test
+#'
+#' @returns Logical if object is a filename pair
+#'
+#' @details A filename pair is a combination of R and csv
+#' files in redcap that together provide the necessary information
+#' for import.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' is_filename_pair("file.txt")
+#' is_filename_pair(list(r="file.r",csv="file.csv"))
+#' }
+is_filename_pair <- function(f) {
+  if (! is.list(f) ) return(FALSE)
+  if (utils::hasName(f, "r") && utils::hasName(f,"csv")) return(TRUE)
+  return(FALSE)
+}
+
+
 #' Return REDCap filename pairs (R and DATA)
 #'
 #' @param f A filename to derive pairs from
@@ -26,6 +52,7 @@ return_filename_pair <- function(f) {
 #' # [1] TRUE
 #'
 is_filename_r <- function(f) {
+  if ( is_filename_pair(f) ) return(FALSE)
   stringr::str_ends(f,  "\\.(?i)r")
 }
 
@@ -40,7 +67,8 @@ is_filename_r <- function(f) {
 #' is_filename_csv("test.csv")
 #' # [1] TRUE
 is_filename_csv <- function(f) {
-  stringr::str_ends(f, "\\.(?i)csv")
+  if ( is_filename_pair(f) ) return(FALSE)
+  all(stringr::str_ends(f, "\\.(?i)csv"))
 }
 
 #' Return the R filename based on input filename
@@ -57,6 +85,7 @@ is_filename_csv <- function(f) {
 #' r_filename("PartnershipTrackingP_DATA_2021-11-08_1628.csv")
 #' # [1] "PartnershipTrackingP_R_2021-11-08_1628.r"
 r_filename <- function(f) {
+  if ( is_filename_pair(f) ) return(f[["r"]])
   ifelse(is_filename_r(f), f, csv_filename_to_r(f))
 }
 
@@ -73,6 +102,7 @@ r_filename <- function(f) {
 #' @examples
 #' csv_filename("PartnershipTrackingP_R_2021-11-08_1628.r")
 csv_filename <- function(f) {
+  if ( is_filename_pair(f) ) return(f[["csv"]])
   ifelse(is_filename_csv(f), f, r_filename_to_csv(f))
 
 }
